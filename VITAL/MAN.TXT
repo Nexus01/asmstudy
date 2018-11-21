@@ -1,0 +1,66 @@
+AX	accumulator
+BX	base
+CX	count
+DX	data
+SP      Stack Pointer
+BP      Base Pointer
+SI      Source Index
+DI      Destination Index
+IP      Instruction Pointer
+CS      Code Segment
+DS      Data Segment
+SS      Stack Segment
+ES      Extra Segment
+OF 	overflow flag
+SF 	sign Flag
+ZF 	zero flag
+CF 	carry flag
+AF  	auxiliary carry flag
+PF 	parity flag
+DF 	direction flag
+IF 	interrupt flag
+TF 	trap flag
+mov     data transfer instruction
+push    memory transfer instruction
+pop     memory transfer instruction
+loop sign    short transfer instruction cx=cx-1
+inc     increase itself
+dec     decrease itself
+
+dw      define word
+db 	define byte                   
+dd 	define double word
+
+and     set zero
+or      set one
+idata   immediate data
+
+reg     ax,bx,cx,dx,ah,al,bh,bl,ch,cl,dh,dl,sp,bp,si,di
+sreg    ds,ss,cs,es
+
+legal   [bx,si],[bx,di],[bp,si],[bp,di]
+word ptr        word pointer
+byte ptr        byte pointer
+
+div     divide
+dup     duplicate
+offset  
+jmp sign    unconditional jump
+jmp short sign        IP=IP+8bit offset
+jmp near ptr sign   IP=IP+16bit offset
+jmp far ptr sign    CS & IP
+jmp word ptr address
+jmp dword ptr address
+jcxz sign   judge cx zero   conditional transfer(short)
+
+7  6 5 4 3 2 1 0
+BL R G B I R G B BL=BLINK  I=LIGHT
+
+ret     return ;change IP,short transfer
+retf    return far;change CS&IP,far transfer
+call sign       ;push IP,jmp near ptr sign
+call far ptr sign       ;push CS,push IP,jmp far ptr sign
+call reg(16bit)         ;push IP,jmp reg(16bit)
+call word ptr memoryaddress     ;push IP,jmp word ptr memoryaddress
+
+
