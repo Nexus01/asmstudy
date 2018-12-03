@@ -1,0 +1,163 @@
+Microsoft (R) Macro Assembler Version 5.00                  11/28/18 10:57:13
+                                                             Page     1-1
+
+
+       1				;20bit 16 ary  need 21 bit 16ary 
+       2				assume cs:code,ds:data 
+       3 0000				data segment 
+       4				;X dw 1000h,2000h,3000h,4000h,5000h 
+       5				;X dw 0ffffh,0ffffh,0ffffh,0ffffh,0ffff
+					h 
+       6				;Y dw 0ffffh,0ffffh,0ffffh,0ffffh,0ffff
+					h 
+       7 0000  9876 5432 9876 5432	X dw 9876h,5432h,9876h,5432h,9876h 
+       8       9876			
+       9 000A  9123 7678 9123 7678	Y dw 9123h,7678h,9123h,7678h,9123h 
+      10       9123			
+      11				;Y dw 0001h,0002h,0003        ; mov ax,
+					[bx+di] 
+      12				        ; add ax,[bx+si] 
+      13				        ; mov [si+12+bx],ax 
+      14				        ; sub bx,2h,0004h,0005h 
+      15 0014  0006[			Z dw 6 dup(0) 
+      16	   0000			
+      17			 ]	
+      18				
+      19 0020				data ends 
+      20 0000				code segment 
+      21 0000  B8 ---- R		start:  mov ax,data 
+      22 0003  8E D8			        mov ds,ax 
+      23 0005  BB 0008			        mov bx,8 
+      24 0008  8D 3E 0000 R		        lea di,X 
+      25 000C  8D 36 000A R		        lea si,Y 
+      26 0010  B9 0005			        mov cx,5 
+      27				        ; mov ax,[bx+di] 
+      28				        ; add ax,[bx+si] 
+      29				        ; mov [si+12+bx],ax 
+      30				        ; sub bx,2 
+      31				        ; mov dx,0 
+      32				        ; push dx 
+      33				; LP:     pop dx 
+      34				;         mov ax,[bx+di] 
+      35				;         adc ax,[bx+si] 
+      36				        ;adc ax,0 
+      37				        ; mov ax,[bx+di] 
+      38				        ; adc ax,[bx+si] 
+      39				        ; mov [si+12+bx],ax 
+      40				        ; adc word ptr [si+10+bx],0 
+      41				        ; mov ax,[si+10+bx] 
+      42				        ; push ax 
+      43				        ; sub bx,2 
+      44 0013				LP:      
+      45 0013  8B 01			        mov ax,[bx+di] 
+      46 0015  13 00			        adc ax,[bx+si] 
+      47 0017  89 40 0C			        mov [si+12+bx],ax 
+      48				        ;adc word ptr [si+12+bx],0 
+      49				        ;pop ax 
+      50				        ;adc word ptr [si+10+bx],ax 
+      51				        ;adc ax,[si+12+bx] 
+Microsoft (R) Macro Assembler Version 5.00                  11/28/18 10:57:13
+                                                             Page     1-2
+
+
+      52				        ;adc word ptr [si+12+bx],0 
+      53				        ;add [si+12+bx],dx 
+      54				        ;adc word ptr [si+10+bx],0 
+      55				        ;mov ax,[si+10+bx] 
+      56				        ;push ax 
+      57 001A  4B			        dec bx 
+      58 001B  4B			        dec bx 
+      59				        ;sub bx,2 
+      60				        ;mov dx,[si+10+bx] 
+      61				        ;push dx 
+      62				        ;mov word ptr [si+10+bx],0 
+      63				        ;rcl word ptr [si+10+bx],1 
+      64				        ;mov dx,0 
+      65				        ;adc dx,0 
+      66				        ;push dx 
+      67				        ;and bx,11111101b 
+      68				         
+      69 001C  E2 F5			        loop LP 
+      70 001E  C7 06 0014 R 0000	        mov Z,0 
+      71 0024  83 16 0014 R 00		        adc Z,0 
+      72				        ;adc word ptr [si+12+bx],0 
+      73				        ;clc 
+      74				        ; mov ax,X+8 
+      75				        ; add ax,Y+8 
+      76				        ; mov Z+10,ax 
+      77				        ; ;adc Z+8,0 
+      78				        ; ; mov Z+8,0 
+      79				        ; ; rcl Z+8,1 
+      80				 
+      81				        ; mov ax,X+6 
+      82				        ; add ax,Y+6 
+      83				        ; mov Z+8,ax 
+      84				        ; adc Z+6,0 
+      85				        ; ; mov Z+6,0 
+      86				        ; ; rcl Z+6,1 
+      87				 
+      88				        ; mov ax,X+4 
+      89				        ; add ax,Y+4 
+      90				        ; mov Z+6,ax 
+      91				        ; adc Z+4,0 
+      92				        ; ; mov Z+4,0 
+      93				        ; ; rcl Z+4,1 
+      94				 
+      95				        ; mov ax,X+2 
+      96				        ; add ax,Y+2 
+      97				        ; mov Z+4,ax 
+      98				        ; adc Z+2,0 
+      99				        ; ; mov Z+2,0 
+     100				        ; ; rcl Z+2,1 
+     101				 
+     102				        ; mov ax,X 
+     103				        ; add ax,Y 
+     104				        ; mov Z+2,ax 
+     105				        ; adc Z,0 
+Microsoft (R) Macro Assembler Version 5.00                  11/28/18 10:57:13
+                                                             Page     1-3
+
+
+     106				        ; mov Z,0 
+     107				        ; rcl Z,1 
+     108				 
+     109 0029  B4 4C			        mov ah,4ch 
+     110 002B  CD 21			        int 21h 
+     111 002D				code ends 
+     112				end start 
+Microsoft (R) Macro Assembler Version 5.00                  11/28/18 10:57:13
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	002D	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0020	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+LP . . . . . . . . . . . . . . .  	L NEAR	0013	CODE
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+X  . . . . . . . . . . . . . . .  	L WORD	0000	DATA
+
+Y  . . . . . . . . . . . . . . .  	L WORD	000A	DATA
+
+Z  . . . . . . . . . . . . . . .  	L WORD	0014	DATA	Length = 0006
+
+@FILENAME  . . . . . . . . . . .  	TEXT  test		
+
+
+    107 Source  Lines
+    107 Total   Lines
+      9 Symbols
+
+  50504 + 466024 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
