@@ -1,13 +1,18 @@
 assume cs:code,ds:data;,ss:stack
 data segment
-STR1  		DB 'FJDKLSAJFDKA;FJDKSA;FJ'
-STR2  		DB 'DKDKKDKDKDKDKDKDKDKDKD'
+;STR1            DB 'FJDKLSAJFDKA;FJDKSA;FJ'
+;STR2            DB 'DKDKKDKDKDKDKDKDKDKDKD'
+STR2  		DB 'FJDKLSAJA;FJ'
+;STR1		DB '201610320057'
+STR1  		DB 'DKDKKDKDKDKD'
 COUNT 	DB STR2-STR1
 data ends
 code segment
 START:  	MOV AX,data
         	MOV DS,AX
         	MOV CX,0010H
+		;LEA SI,COUNT
+		;MOV CX,[SI]
         	LEA SI,STR1
         	MOV DI,OFFSET STR2
         	CMP SI,DI

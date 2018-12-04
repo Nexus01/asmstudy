@@ -46,6 +46,9 @@ lp1:    mul bx;dx storage high 16 bit,ax storage low 16 bit ;low 4 bit
 
         loop lp1
         mov dx,carry+2
+        lea di,outbuf
+        mov [di],ax
+        mov [di+2],dx
         
 
 

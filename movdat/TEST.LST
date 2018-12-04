@@ -1,51 +1,52 @@
-Microsoft (R) Macro Assembler Version 5.00                  11/28/18 09:48:06
+Microsoft (R) Macro Assembler Version 5.00                  12/3/18 19:34:11
                                                              Page     1-1
 
 
        1				assume cs:code,ds:data;,ss:stack 
        2 0000				data segment 
-       3 0000  46 4A 44 4B 4C 53 41	STR1  		DB 'FJDKLSAJFDKA;FJDKSA
-					;FJ' 
-       4       4A 46 44 4B 41 3B 46	
-       5       4A 44 4B 53 41 3B 46	
-       6       4A			
-       7 0016  44 4B 44 4B 4B 44 4B	STR2  		DB 'DKDKKDKDKDKDKDKDKDK
-					DKD' 
-       8       44 4B 44 4B 44 4B 44	
-       9       4B 44 4B 44 4B 44 4B	
-      10       44			
-      11 002C  16			COUNT 	DB STR2-STR1 
-      12 002D				data ends 
-      13 0000				code segment 
-      14 0000  B8 ---- R		START:  	MOV AX,data 
-      15 0003  8E D8			        	MOV DS,AX 
-      16 0005  B9 0010			        	MOV CX,0010H 
-      17 0008  8D 36 0000 R		        	LEA SI,STR1 
-      18 000C  BF 0016 R		        	MOV DI,OFFSET STR2 
-      19 000F  3B F7			        	CMP SI,DI 
-      20 0011  77 12			        	JA LP2 
-      21 0013  03 F1			        	ADD SI,CX 
-      22 0015  03 F9			        	ADD DI,CX 
-      23 0017  4E			        	DEC SI 
-      24 0018  4F			        	DEC DI 
-      25 0019  8A 04			LP1:    	MOV AL,[SI] 
-      26 001B  88 05			        	MOV [DI],AL 
-      27 001D  4E			        	DEC SI 
-      28 001E  4F			        	DEC DI 
-      29 001F  49			        	DEC CX 
-      30 0020  75 F7			        	JNE LP1 
-      31 0022  EB 0A 90			        	JMP LP3 
-      32 0025  8A 04			LP2:    	MOV AL,[SI] 
-      33 0027  88 05			        	MOV [DI],AL 
-      34 0029  46			        	INC SI 
-      35 002A  47			        	INC DI 
-      36 002B  49			        	DEC CX 
-      37 002C  75 F7			        	JNE LP2 
-      38 002E  B4 4C			LP3:    	MOV AH,4CH 
-      39 0030  CD 21			        	INT 21H 
-      40 0032				            code ends 
-      41				END 		START 
-Microsoft (R) Macro Assembler Version 5.00                  11/28/18 09:48:06
+       3				;STR1            DB 'FJDKLSAJFDKA;FJDKS
+					A;FJ' 
+       4				;STR2            DB 'DKDKKDKDKDKDKDKDKD
+					KDKD' 
+       5				;STR1  		DB 'FJDKLSAJA;FJ' 
+       6 0000  32 30 31 36 31 30 33	STR1		DB '201610320057' 
+       7       32 30 30 35 37		
+       8 000C  44 4B 44 4B 4B 44 4B	STR2  		DB 'DKDKKDKDKDKD' 
+       9       44 4B 44 4B 44		
+      10 0018  0C			COUNT 	DB STR2-STR1 
+      11 0019				data ends 
+      12 0000				code segment 
+      13 0000  B8 ---- R		START:  	MOV AX,data 
+      14 0003  8E D8			        	MOV DS,AX 
+      15				        	;MOV CX,0010H 
+      16 0005  8D 36 0018 R				LEA SI,COUNT 
+      17 0009  8B 0C					MOV CX,[SI] 
+      18 000B  8D 36 0000 R		        	LEA SI,STR1 
+      19 000F  BF 000C R		        	MOV DI,OFFSET STR2 
+      20 0012  3B F7			        	CMP SI,DI 
+      21 0014  77 12			        	JA LP2 
+      22 0016  03 F1			        	ADD SI,CX 
+      23 0018  03 F9			        	ADD DI,CX 
+      24 001A  4E			        	DEC SI 
+      25 001B  4F			        	DEC DI 
+      26 001C  8A 04			LP1:    	MOV AL,[SI] 
+      27 001E  88 05			        	MOV [DI],AL 
+      28 0020  4E			        	DEC SI 
+      29 0021  4F			        	DEC DI 
+      30 0022  49			        	DEC CX 
+      31 0023  75 F7			        	JNE LP1 
+      32 0025  EB 0A 90			        	JMP LP3 
+      33 0028  8A 04			LP2:    	MOV AL,[SI] 
+      34 002A  88 05			        	MOV [DI],AL 
+      35 002C  46			        	INC SI 
+      36 002D  47			        	INC DI 
+      37 002E  49			        	DEC CX 
+      38 002F  75 F7			        	JNE LP2 
+      39 0031  B4 4C			LP3:    	MOV AH,4CH 
+      40 0033  CD 21			        	INT 21H 
+      41 0035				            code ends 
+      42				END 		START 
+Microsoft (R) Macro Assembler Version 5.00                  12/3/18 19:34:11
                                                              Symbols-1
 
 
@@ -53,28 +54,28 @@ Segments and Groups:
 
                 N a m e         	Length	 Align	Combine Class
 
-CODE . . . . . . . . . . . . . .  	0032	PARA	NONE	
-DATA . . . . . . . . . . . . . .  	002D	PARA	NONE	
+CODE . . . . . . . . . . . . . .  	0035	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0019	PARA	NONE	
 
 Symbols:            
 
                 N a m e         	Type	 Value	 Attr
 
-COUNT  . . . . . . . . . . . . .  	L BYTE	002C	DATA
+COUNT  . . . . . . . . . . . . .  	L BYTE	0018	DATA
 
-LP1  . . . . . . . . . . . . . .  	L NEAR	0019	CODE
-LP2  . . . . . . . . . . . . . .  	L NEAR	0025	CODE
-LP3  . . . . . . . . . . . . . .  	L NEAR	002E	CODE
+LP1  . . . . . . . . . . . . . .  	L NEAR	001C	CODE
+LP2  . . . . . . . . . . . . . .  	L NEAR	0028	CODE
+LP3  . . . . . . . . . . . . . .  	L NEAR	0031	CODE
 
 START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
 STR1 . . . . . . . . . . . . . .  	L BYTE	0000	DATA
-STR2 . . . . . . . . . . . . . .  	L BYTE	0016	DATA
+STR2 . . . . . . . . . . . . . .  	L BYTE	000C	DATA
 
 @FILENAME  . . . . . . . . . . .  	TEXT  test		
 
 
-     35 Source  Lines
-     35 Total   Lines
+     40 Source  Lines
+     40 Total   Lines
      11 Symbols
 
   50582 + 465946 Bytes symbol space free

@@ -64,3 +64,11 @@ call reg(16bit)         ;push IP,jmp reg(16bit)
 call word ptr memoryaddress     ;push IP,jmp word ptr memoryaddress
 
 
+OF   溢出(是/否)         OV    OVerflow            NV    Not oVerflow     
+DF   方向(减量/增量)   DN    DowN                 UP    UP     
+IF   中断(允许/关闭)    EI     Enable Interrupt   DI    Disable Interrupt     
+SF   符号(负/正)         NG    NeGative             PL    PLus     
+ZF   零(是/否)           ZR    ZeRo                  NZ     Not     Zero     
+AF   辅助进位(是/否)   AC    Auxiliary Carry     NA    Not   Auxiliary     
+PF   奇偶(是/否)         PE     Parity Even         PO    Parity   Odd     
+CF   进位(是/否)        CY     CarrY                 NC    Not   Carry
