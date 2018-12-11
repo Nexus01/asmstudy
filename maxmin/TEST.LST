@@ -1,0 +1,89 @@
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 11:08:20
+                                                             Page     1-1
+
+
+       1				assume cs:code,ds:data 
+       2 0000				data segment 
+       3 0000  01 02 03 04 05 06 07	DAT db 01,02,03,04,05,06,07,08,09,10; s
+					igned -128~127  unsigned 0～255 
+       4       08 09 0A			
+       5				;DAT db -128,-127,-2,-1,0,1,2,126,127;i
+					f a byte >=80 ,it is a negative number 
+       6				; 0  1  2 ....126 127 |-128 -127 -126..
+					 -2  -1 
+       7				; 00 01 02    7e  7f  | 80   81   82   
+					 fe  ff 
+       8				;while all postive(including zero ) , c
+					ompare directly 
+       9				;while all negative, as described above
+					 
+      10				;while mixed,  
+      11				;method 1: extend to word 
+      12				;method 2: 
+      13 000A				data ends 
+      14 0000				code segment 
+      15 0000  B8 ---- R		start:  mov ax,data 
+      16 0003  8E D8			        mov ds,ax 
+      17 0005  B9 0008			        mov cx,8h 
+      18 0008  E8 000C R		        call BRANCH 
+      19 000B  CC			        int 3h 
+      20 000C  E3 1E			BRANCH: jcxz A4 
+      21 000E  56			        push si 
+      22 000F  51			        push cx 
+      23 0010  53			        push bx 
+      24 0011  8A 3C			        mov bh,[si] 
+      25 0013  8A DF			        mov bl,bh 
+      26 0015  AC			A1:     lodsb 
+      27 0016  3A C7			        cmp al,bh 
+      28 0018  76 05			        jbe A2; below or equal al<=bh 
+      29 001A  8A F8			        mov bh,al 
+      30 001C  EB 07 90			        jmp A3 
+      31 001F  3A C3			A2:     cmp al,bl 
+      32 0021  73 02			        jae A3;above or equal al>=bl 
+      33 0023  8A D8			        mov bl,al 
+      34 0025  E2 EE			A3:     loop A1 
+      35 0027  8B C3			        mov ax,bx 
+      36 0029  5B			        pop bx 
+      37 002A  59			        pop cx 
+      38 002B  5E			        pop si 
+      39 002C  C3			A4:     ret 
+      40 002D				code ends 
+      41				end start                              
+					           
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 11:08:20
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	002D	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	000A	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A1 . . . . . . . . . . . . . . .  	L NEAR	0015	CODE
+A2 . . . . . . . . . . . . . . .  	L NEAR	001F	CODE
+A3 . . . . . . . . . . . . . . .  	L NEAR	0025	CODE
+A4 . . . . . . . . . . . . . . .  	L NEAR	002C	CODE
+
+BRANCH . . . . . . . . . . . . .  	L NEAR	000C	CODE
+
+DAT  . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  test		
+
+
+     40 Source  Lines
+     40 Total   Lines
+     11 Symbols
+
+  50582 + 465946 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

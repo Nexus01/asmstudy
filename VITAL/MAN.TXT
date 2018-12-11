@@ -72,3 +72,6 @@ ZF   零(是/否)           ZR    ZeRo                  NZ     Not     Zero
 AF   辅助进位(是/否)   AC    Auxiliary Carry     NA    Not   Auxiliary     
 PF   奇偶(是/否)         PE     Parity Even         PO    Parity   Odd     
 CF   进位(是/否)        CY     CarrY                 NC    Not   Carry
+
+LODSB	Load byte at address DS:(E)SI into AL
+LODSW	Load word at address DS:(E)SI into AX

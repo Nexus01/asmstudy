@@ -1,0 +1,197 @@
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 20:34:51
+                                                             Page     1-1
+
+
+       1				assume cs:code,ds:data 
+       2 0000				data segment 
+       3 0000  0014[			BUF db 20 dup(0) 
+       4	   00			
+       5			 ]	
+       6				
+       7 0014  70 6C 65 61 73 65 20	TIP db 'please input N for calculating 
+					the factor of N','$' 
+       8       69 6E 70 75 74 20 4E	
+       9       20 66 6F 72 20 63 61	
+      10       6C 63 75 6C 61 74 69	
+      11       6E 67 20 74 68 65 20	
+      12       66 61 63 74 6F 72 20	
+      13       6F 66 20 4E 24		
+      14 0043  06 00			N   db 6,0,6 dup(0) 
+      15       0006[			
+      16	   00			
+      17			 ]	
+      18				
+      19 004B  0002[			BIN db 2 dup(0) 
+      20	   00			
+      21			 ]	
+      22				
+      23 004D  0000			LEN dw 0 
+      24 004F  0014[			OUTBUF db 20 dup(0),'$' 
+      25	   00			
+      26			 ]	
+      27       24			
+      28 0064				data ends 
+      29 0000				code segment 
+      30 0000  B8 ---- R		start:  mov ax,data 
+      31 0003  8E D8			        mov ds,ax  
+      32 0005  E8 000C R		        call BRANCH 
+      33 0008  B4 4C			        mov ah,4ch 
+      34 000A  CD 21			        int 21h 
+      35 000C  8D 16 0014 R		BRANCH: lea dx,TIP 
+      36 0010  B4 09			        mov ah,09h 
+      37 0012  CD 21			        int 21h 
+      38 0014  B2 0A			        mov dl,10 
+      39 0016  B4 02			        mov ah,2 
+      40 0018  CD 21			        int 21h 
+      41 001A  8D 16 0043 R		        lea dx,N 
+      42 001E  B4 0A			        mov ah,0ah 
+      43 0020  CD 21			        int 21h 
+      44 0022  B2 0A			        mov dl,10 
+      45 0024  B4 02			        mov ah,2 
+      46 0026  CD 21			        int 21h 
+      47 0028  8D 3E 0043 R		        lea di,N 
+      48 002C  47			        inc di 
+      49 002D  33 DB			        xor bx,bx 
+      50 002F  8A 1D			        mov bl,[di] 
+      51 0031  C6 41 01 00		        mov byte ptr [di+1+bx],0 
+      52 0035  E8 0053 R		        call TTT 
+      53				        ;lea di,BIN 
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 20:34:51
+                                                             Page     1-2
+
+
+      54 0038  8B 2D			        mov bp,[di] 
+      55 003A  83 FD 01			        cmp bp,1 
+      56 003D  8D 36 0000 R		        lea si,BUF 
+      57 0041  76 3F			        jbe ONE 
+      58 0043  E8 0087 R		        call CALN 
+      59 0046				DISP:   ;lea si,N ;ten to two(hex) 
+      60				;         inc si 
+      61				;         xor bx,bx 
+      62				;         mov bl,[si] 
+      63 0046  8D 3E 0000 R		        lea di,BUF 
+      64				 
+      65				        ;mov byte ptr [di+bx],'$' 
+      66 004A  8D 16 004F R		        lea dx,OUTBUF 
+      67 004E  B4 09			        mov ah,09h 
+      68 0050  CD 21			        int 21h 
+      69 0052  C3			FIN:    ret 
+      70				 
+      71 0053  8D 36 0043 R		TTT:    lea si,N ;ten to two(hex) 
+      72 0057  46			        inc si 
+      73 0058  33 C9			        xor cx,cx 
+      74 005A  8A 0C			        mov cl,[si] 
+      75 005C  49			        dec cx 
+      76 005D  46			        inc si 
+      77 005E  8D 3E 004B R		        lea di,BIN 
+      78 0062  BB 000A			        mov bx,000ah 
+      79				        ;mov cx,count-1 
+      80 0065  B4 00			        mov ah,0h 
+      81 0067  8A 04			        mov al,[si] 
+      82 0069  2C 30			        sub al,30h 
+      83 006B  8A 54 01			        mov dl,[si+1] 
+      84 006E  80 FA 00			        cmp dl,0 
+      85 0071  74 0C			        je BAC 
+      86 0073  F7 EB			    lp1:imul bx 
+      87 0075  02 44 01			        add al,[si+1] 
+      88 0078  02 C2			        add al,dl 
+      89 007A  2C 30			        sub al,30h 
+      90 007C  46			        inc si 
+      91 007D  E2 F4			        loop lp1 
+      92 007F  89 05			    BAC:mov [di],ax 
+      93 0081  C3			        ret 
+      94				 
+      95 0082  C6 04 31			ONE:    mov byte ptr [si],'1' 
+      96 0085  EB BF			        jmp DISP 
+      97 0087  8D 3E 0000 R		CALN:   lea di,BUF 
+      98 008B  89 2D			        mov [di],bp 
+      99 008D				BADX: 
+     100 008D  4D			        dec bp 
+     101 008E  83 FD 01			        cmp bp,1 
+     102 0091  74 B3			        je DISP 
+     103 0093  F8			        clc 
+     104 0094  33 DB			        xor bx,bx 
+     105 0096  8B 0E 004D R		        mov cx,LEN 
+     106 009A  8B C5			MULL:   mov ax,bp 
+     107 009C  F7 22			        mul word ptr [si+bp] 
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 20:34:51
+                                                             Page     1-3
+
+
+     108 009E  15 0000			        adc ax,0 
+     109 00A1  72 17			        jc ADDH 
+     110 00A3  89 02			BADDH:  mov word ptr [si+bp],ax 
+     111 00A5  D1 E2			        sal dx,1 
+     112 00A7  46			        inc si 
+     113 00A8  E2 F0			        loop MULL 
+     114 00AA  83 FA 00			        cmp dx,0 
+     115 00AD  74 DE			        je BADX 
+     116 00AF  A1 004D R		        mov ax,LEN 
+     117 00B2  40			        inc ax 
+     118 00B3  A3 004D R		        mov LEN,ax 
+     119 00B6  89 10			        mov word ptr [si+bx],dx 
+     120 00B8  EB D3			        jmp BADX 
+     121 00BA  42			ADDH:   inc dx 
+     122 00BB  EB E6			        jmp BADDH 
+     123 00BD				code ends 
+     124				end start 
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 20:34:51
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	00BD	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0064	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+ADDH . . . . . . . . . . . . . .  	L NEAR	00BA	CODE
+
+BAC  . . . . . . . . . . . . . .  	L NEAR	007F	CODE
+BADDH  . . . . . . . . . . . . .  	L NEAR	00A3	CODE
+BADX . . . . . . . . . . . . . .  	L NEAR	008D	CODE
+BIN  . . . . . . . . . . . . . .  	L BYTE	004B	DATA	Length = 0002
+BRANCH . . . . . . . . . . . . .  	L NEAR	000C	CODE
+BUF  . . . . . . . . . . . . . .  	L BYTE	0000	DATA	Length = 0014
+
+CALN . . . . . . . . . . . . . .  	L NEAR	0087	CODE
+
+DISP . . . . . . . . . . . . . .  	L NEAR	0046	CODE
+
+FIN  . . . . . . . . . . . . . .  	L NEAR	0052	CODE
+
+LEN  . . . . . . . . . . . . . .  	L WORD	004D	DATA
+LP1  . . . . . . . . . . . . . .  	L NEAR	0073	CODE
+
+MULL . . . . . . . . . . . . . .  	L NEAR	009A	CODE
+
+N  . . . . . . . . . . . . . . .  	L BYTE	0043	DATA
+
+ONE  . . . . . . . . . . . . . .  	L NEAR	0082	CODE
+OUTBUF . . . . . . . . . . . . .  	L BYTE	004F	DATA	Length = 0014
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+TIP  . . . . . . . . . . . . . .  	L BYTE	0014	DATA
+TTT  . . . . . . . . . . . . . .  	L NEAR	0053	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  test		
+
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 20:34:51
+                                                             Symbols-2
+
+
+
+    105 Source  Lines
+    105 Total   Lines
+     23 Symbols
+
+  50466 + 466062 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

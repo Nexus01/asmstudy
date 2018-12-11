@@ -1,0 +1,137 @@
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 11:50:30
+                                                             Page     1-1
+
+
+       1				assume cs:code,ds:data 
+       2 0000				data segment 
+       3				;DAT db 01,02,03,04,05,06,07,08,09,10; 
+					signed -128~127  unsigned 0～255 
+       4				;DAT db -128,-127,-2,-1,0,1,2,126,127;i
+					f a byte >=80 ,it is a negative number 
+       5 0000  81 FE FF 80 00 01 02	DAT db -127,-2,-1,-128,0,1,2,127,126 
+       6       7F 7E			
+       7 0009  00 01			NONG db 00,01 
+       8				; 0  1  2 ....126 127 |-128 -127 -126..
+					 -2  -1 
+       9				; 00 01 02    7e  7f  | 80   81   82   
+					 fe  ff 
+      10				;while all postive(including zero ) , c
+					ompare directly 
+      11				;while all negative, as described above
+					 
+      12				;while mixed,  
+      13				;method 1: extend to word 
+      14				;correspond to 0100-00ff 
+      15				; -128    -127   -126..  -2    -1    0 
+					     1    2 .... 126  127  
+      16				;  0080   0081   0082    00fe  00ff  01
+					00 0101 0102    017e  017f   
+      17				;method 2: compare separately  + vs + /
+					  - vs - 
+      18 000B				data ends 
+      19 0000				code segment 
+      20 0000  B8 ---- R		start:  mov ax,data 
+      21 0003  8E D8			        mov ds,ax 
+      22 0005  8D 3E 0009 R		        lea di,NONG 
+      23				        ;mov ax,0100h 
+      24				        ;mov bx,0ffh 
+      25				        ;sub ax,bx 
+      26 0009  B9 0008			        mov cx,8h 
+      27 000C  E8 0010 R		        call BRANCH 
+      28 000F  CC			        int 3h 
+      29 0010  E3 31			BRANCH: jcxz A4 
+      30 0012  56			        push si 
+      31 0013  51			        push cx 
+      32 0014  53			        push bx 
+      33 0015  52			        push dx 
+      34 0016  33 DB			        xor bx,bx 
+      35 0018  8A 3C			        mov bh,[si] ;bh~=bx bl~=dx 
+      36 001A  8B D3			        mov dx,bx 
+      37				        ;mov bl,bh 
+      38 001C  AC			A1:     lodsb 
+      39				        ;load the prelude 
+      40 001D  3C 80			        cmp al,80h 
+      41 001F  72 23			        jb PRELa 
+      42 0021  B4 00			        mov ah,0h 
+      43 0023				BACK1:   
+      44 0023  80 FB 80			        cmp bl,80h 
+      45 0026  72 25			        jb PRELb 
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 11:50:30
+                                                             Page     1-2
+
+
+      46 0028  B7 00			        mov bh,0 
+      47 002A				BACK2: 
+      48 002A  3B C3			        cmp ax,bx; 0100 00ff 
+      49 002C  76 05			        jbe A2; below or equal al<=bh 
+      50 002E  8B D8			        mov bx,ax 
+      51 0030  EB 07 90			        jmp A3 
+      52 0033  3B C2			A2:     cmp ax,dx 
+      53 0035  73 02			        jae A3;above or equal al>=bl 
+      54 0037  8B D0			        mov dx,ax 
+      55 0039  E2 E1			A3:     loop A1 
+      56				        ;mov ax,bx 
+      57 003B  8A E3			        mov ah,bl; max-> ah 
+      58 003D  8A C2			        mov al,dl; min-> al 
+      59 003F  5A			        pop dx 
+      60 0040  5B			        pop bx 
+      61 0041  59			        pop cx 
+      62 0042  5E			        pop si 
+      63 0043  C3			A4:     ret 
+      64 0044				PRELa:    
+      65 0044  8D 3E 0009 R		        lea di,NONG 
+      66 0048  47			        inc di 
+      67 0049  8A 25			        mov ah,[di] 
+      68 004B  EB D6			        jmp BACK1 
+      69 004D				PRELb:    
+      70 004D  8D 3E 0009 R		        lea di,NONG 
+      71 0051  47			        inc di 
+      72 0052  8A 3D			        mov bh,[di] 
+      73 0054  EB D4			        jmp BACK2 
+      74 0056				code ends 
+      75				end start                              
+					           
+Microsoft (R) Macro Assembler Version 5.00                  12/11/18 11:50:30
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0056	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	000B	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+A1 . . . . . . . . . . . . . . .  	L NEAR	001C	CODE
+A2 . . . . . . . . . . . . . . .  	L NEAR	0033	CODE
+A3 . . . . . . . . . . . . . . .  	L NEAR	0039	CODE
+A4 . . . . . . . . . . . . . . .  	L NEAR	0043	CODE
+
+BACK1  . . . . . . . . . . . . .  	L NEAR	0023	CODE
+BACK2  . . . . . . . . . . . . .  	L NEAR	002A	CODE
+BRANCH . . . . . . . . . . . . .  	L NEAR	0010	CODE
+
+DAT  . . . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+NONG . . . . . . . . . . . . . .  	L BYTE	0009	DATA
+
+PRELA  . . . . . . . . . . . . .  	L NEAR	0044	CODE
+PRELB  . . . . . . . . . . . . .  	L NEAR	004D	CODE
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  next		
+
+
+     74 Source  Lines
+     74 Total   Lines
+     16 Symbols
+
+  50586 + 465942 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
