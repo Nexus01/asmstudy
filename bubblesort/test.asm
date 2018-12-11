@@ -4,19 +4,16 @@
 ;持续每次对越来越少的元素重复上面的步骤，直到没有任何一对数字需要比较。
 assume cs:code,ds:data
 data segment
-;ORI	db 12 dup(0)
-ORI 	db 12,0,12 dup(0)
+;ORI 	db 13,0,13 dup(0)
+ORI 	db 100,0,100 dup(0)
 ; 2 0 1 6 1 0 3 2 0 0 5 7
-ORIEND  equ $-ORI;13
-THEND db '$'
-STOBUF db 3 dup(0);[0] storage [i],[1] storage [i+1],[2] storage temp
-OUTBUF  db 12 dup(0),'$'
-HAVEX	db 0
+;ORIEND  equ $-ORI;13
+;THEND db '$'
 data ends
 code segment
 start:	mov ax,data
 	mov ds,ax
-	lea dx,ORI
+	mov dx,offset ORI
 	mov ah,0ah
 	int 21h
 	mov dl,10
@@ -27,21 +24,20 @@ start:	mov ax,data
 	;i from 0 to end-1
 EVE:
 	xor cx,cx
-	mov cl,ORIEND
-	sub cx,2;11
+	lea si,ORI
+	inc si;real num
+	mov cl,[si];cx=12
+	dec cx;cx=11
 	mov dx,cx
-	;inc dx
 	lea di,ORI
-	;lea si,STOBUF
+	add di,2
 LP1:xor bx,bx
 	mov bl,[di]
 	mov bh,[di+1]
 	cmp bl,bh
 	ja EXCH
 	dec dx
-FAN:
-	inc di
-	dec cx
+FAN:inc di
 	loop LP1
 	cmp dx,0
 	jnz EVE
@@ -49,21 +45,17 @@ FAN:
 EXCH:	mov [di],bh
 		mov [di+1],bl
 		jmp FAN
-		; inc di
-		; dec dx
-		; jmp LP1
-;DONE:
-	;mov cx,12
-LP2:
-	lea si,ORI
-	add si,2
-
 DONE:
+    lea si,ORI
+	inc si
+	xor bx,bx
+	mov bl,[si]
+	add bl,2
+	mov byte ptr [si+bx],'$'
 	lea dx,ORI
 	add dx,2
 	mov ah,9h
 	int 21h
-
 	mov ah,4ch
 	int 21h
 

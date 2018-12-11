@@ -1,4 +1,4 @@
-Microsoft (R) Macro Assembler Version 5.00                  12/4/18 19:55:14
+Microsoft (R) Macro Assembler Version 5.00                  12/5/18 01:37:46
                                                              Page     1-1
 
 
@@ -16,87 +16,77 @@
 					�一对数字需要比较。 
        5				assume cs:code,ds:data 
        6 0000				data segment 
-       7				;ORI	db 12 dup(0) 
-       8 0000  0C 00			ORI 	db 12,0,12 dup(0) 
-       9       000C[			
+       7				;ORI 	db 13,0,13 dup(0) 
+       8 0000  64 00			ORI 	db 100,0,100 dup(0) 
+       9       0064[			
       10	   00			
       11			 ]	
       12				
       13				; 2 0 1 6 1 0 3 2 0 0 5 7 
-      14 = 000E				ORIEND  equ $-ORI;13 
-      15 000E  24			THEND db '$' 
-      16 000F  0003[			STOBUF db 3 dup(0);[0] storage [i],[1] 
-					storage [i+1],[2] storage temp 
-      17	   00			
-      18			 ]	
-      19				
-      20 0012  000C[			OUTBUF  db 12 dup(0),'$' 
-      21	   00			
-      22			 ]	
-      23       24			
-      24 001F  00			HAVEX	db 0 
-      25 0020				data ends 
-      26 0000				code segment 
-      27 0000  B8 ---- R		start:	mov ax,data 
-      28 0003  8E D8				mov ds,ax 
-      29 0005  8D 16 0000 R			lea dx,ORI 
-      30 0009  B4 0A				mov ah,0ah 
-      31 000B  CD 21				int 21h 
-      32 000D  B2 0A				mov dl,10 
-      33 000F  B4 02				mov ah,02h 
-      34 0011  CD 21				int 21h 
-      35					;bl storage [i] 
-      36					;bh storage [i+1] 
-      37					;i from 0 to end-1 
-      38 0013				EVE: 
-      39 0013  33 C9				xor cx,cx 
-      40 0015  B1 0E				mov cl,ORIEND 
-      41 0017  83 E9 02				sub cx,2;11 
-      42 001A  8B D1				mov dx,cx 
-      43					;inc dx 
-      44 001C  8D 3E 0000 R			lea di,ORI 
-      45					;lea si,STOBUF 
-Microsoft (R) Macro Assembler Version 5.00                  12/4/18 19:55:14
+      14				;ORIEND  equ $-ORI;13 
+      15				;THEND db '$' 
+      16 0066				data ends 
+      17 0000				code segment 
+      18 0000  B8 ---- R		start:	mov ax,data 
+      19 0003  8E D8				mov ds,ax 
+      20 0005  BA 0000 R			mov dx,offset ORI 
+      21 0008  B4 0A				mov ah,0ah 
+      22 000A  CD 21				int 21h 
+      23 000C  B2 0A				mov dl,10 
+      24 000E  B4 02				mov ah,02h 
+      25 0010  CD 21				int 21h 
+      26					;bl storage [i] 
+      27					;bh storage [i+1] 
+      28					;i from 0 to end-1 
+      29 0012				EVE: 
+      30 0012  33 C9				xor cx,cx 
+      31					; mov cl,ORIEND 
+      32					; sub cx,4;11 
+      33				 
+      34 0014  8D 36 0000 R			lea si,ORI 
+      35 0018  46				inc si;real num 
+      36 0019  8A 0C				mov cl,[si];cx=12 
+      37 001B  49				dec cx 
+      38				 
+      39 001C  8B D1				mov dx,cx 
+      40					;dec dx 
+      41 001E  8D 3E 0000 R			lea di,ORI 
+      42 0022  83 C7 02				add di,2 
+      43 0025  33 DB			LP1:xor bx,bx 
+      44 0027  8A 1D				mov bl,[di] 
+      45 0029  8A 7D 01				mov bh,[di+1] 
+      46 002C  3A DF				cmp bl,bh 
+Microsoft (R) Macro Assembler Version 5.00                  12/5/18 01:37:46
                                                              Page     1-2
 
 
-      46 0020  33 DB			LP1:xor bx,bx 
-      47 0022  8A 1D				mov bl,[di] 
-      48 0024  8A 7D 01				mov bh,[di+1] 
-      49 0027  3A DF				cmp bl,bh 
-      50 0029  77 0D				ja EXCH 
-      51 002B  4A				dec dx 
-      52 002C				FAN: 
-      53 002C  47				inc di 
-      54 002D  49				dec cx 
-      55 002E  E2 F0				loop LP1 
-      56 0030  83 FA 00				cmp dx,0 
-      57 0033  75 DE				jnz EVE 
-      58 0035  EB 12 90				jmp DONE 
-      59 0038  88 3D			EXCH:	mov [di],bh 
-      60 003A  88 5D 01					mov [di+1],bl 
-      61 003D  EB ED					jmp FAN 
-      62						; inc di 
-      63						; dec dx 
-      64						; jmp LP1 
-      65				;DONE: 
-      66 003F  B9 000C				mov cx,12 
-      67 0042				LP2: 
-      68 0042  8D 36 0000 R			lea si,ORI 
-      69 0046  83 C6 02				add si,2 
+      47 002E  77 0C				ja EXCH 
+      48 0030  4A				dec dx 
+      49 0031  47			FAN:inc di 
+      50 0032  E2 F1				loop LP1 
+      51 0034  83 FA 00				cmp dx,0 
+      52 0037  75 D9				jnz EVE 
+      53 0039  EB 08 90				jmp DONE 
+      54 003C  88 3D			EXCH:	mov [di],bh 
+      55 003E  88 5D 01					mov [di+1],bl 
+      56 0041  EB EE					jmp FAN 
+      57 0043				DONE: 
+      58 0043  8D 36 0000 R		    lea si,ORI 
+      59 0047  46				inc si 
+      60 0048  33 DB				xor bx,bx 
+      61 004A  8A 1C				mov bl,[si] 
+      62 004C  80 C3 02				add bl,2 
+      63 004F  C6 00 24				mov byte ptr [si+bx],'$' 
+      64 0052  8D 16 0000 R			lea dx,ORI 
+      65 0056  83 C2 02				add dx,2 
+      66 0059  B4 09				mov ah,9h 
+      67 005B  CD 21				int 21h 
+      68 005D  B4 4C				mov ah,4ch 
+      69 005F  CD 21				int 21h 
       70				 
-      71 0049				DONE: 
-      72 0049  8D 16 0000 R			lea dx,ORI 
-      73 004D  83 C2 02				add dx,2 
-      74 0050  B4 09				mov ah,9h 
-      75 0052  CD 21				int 21h 
-      76				 
-      77 0054  B4 4C				mov ah,4ch 
-      78 0056  CD 21				int 21h 
-      79				 
-      80 0058				code ends 
-      81				end start 
-Microsoft (R) Macro Assembler Version 5.00                  12/4/18 19:55:14
+      71 0061				code ends 
+      72				end start 
+Microsoft (R) Macro Assembler Version 5.00                  12/5/18 01:37:46
                                                              Symbols-1
 
 
@@ -104,42 +94,34 @@ Segments and Groups:
 
                 N a m e         	Length	 Align	Combine Class
 
-CODE . . . . . . . . . . . . . .  	0058	PARA	NONE	
-DATA . . . . . . . . . . . . . .  	0020	PARA	NONE	
+CODE . . . . . . . . . . . . . .  	0061	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0066	PARA	NONE	
 
 Symbols:            
 
                 N a m e         	Type	 Value	 Attr
 
-DONE . . . . . . . . . . . . . .  	L NEAR	0049	CODE
+DONE . . . . . . . . . . . . . .  	L NEAR	0043	CODE
 
-EVE  . . . . . . . . . . . . . .  	L NEAR	0013	CODE
-EXCH . . . . . . . . . . . . . .  	L NEAR	0038	CODE
+EVE  . . . . . . . . . . . . . .  	L NEAR	0012	CODE
+EXCH . . . . . . . . . . . . . .  	L NEAR	003C	CODE
 
-FAN  . . . . . . . . . . . . . .  	L NEAR	002C	CODE
+FAN  . . . . . . . . . . . . . .  	L NEAR	0031	CODE
 
-HAVEX  . . . . . . . . . . . . .  	L BYTE	001F	DATA
-
-LP1  . . . . . . . . . . . . . .  	L NEAR	0020	CODE
-LP2  . . . . . . . . . . . . . .  	L NEAR	0042	CODE
+LP1  . . . . . . . . . . . . . .  	L NEAR	0025	CODE
 
 ORI  . . . . . . . . . . . . . .  	L BYTE	0000	DATA
-ORIEND . . . . . . . . . . . . .  	NUMBER	000E	
-OUTBUF . . . . . . . . . . . . .  	L BYTE	0012	DATA	Length = 000C
 
 START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
-STOBUF . . . . . . . . . . . . .  	L BYTE	000F	DATA	Length = 0003
-
-THEND  . . . . . . . . . . . . .  	L BYTE	000E	DATA
 
 @FILENAME  . . . . . . . . . . .  	TEXT  test		
 
 
-     71 Source  Lines
-     71 Total   Lines
-     17 Symbols
+     68 Source  Lines
+     68 Total   Lines
+     11 Symbols
 
-  50502 + 466026 Bytes symbol space free
+  50466 + 466062 Bytes symbol space free
 
       0 Warning Errors
       0 Severe  Errors

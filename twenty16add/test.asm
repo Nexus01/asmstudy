@@ -56,7 +56,7 @@ LP:
         ;push dx
         ;mov word ptr [si+10+bx],0
         ;rcl word ptr [si+10+bx],1
-        ;mov dx,0
+        ;mov dx,0未命名 1
         ;adc dx,0
         ;push dx
         ;and bx,11111101b
