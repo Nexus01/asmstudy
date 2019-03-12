@@ -1,6 +1,11 @@
-assume cs:code
+assume cs:code,ds:data
+data segment
+PP dw 0,-39,0
+data ends
 code segment
-start:  mov ax,2
+start:  mov ax,data
+        mov ds,ax
+        mov ax,2
         mov cx,2
 LP1:    add ax,ax
         loop LP1

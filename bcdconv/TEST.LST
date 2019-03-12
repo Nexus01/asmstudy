@@ -1,0 +1,67 @@
+Microsoft (R) Macro Assembler Version 5.00                  3/11/19 22:48:08
+                                                             Page     1-1
+
+
+       1				assume cs:code,ds:data 
+       2 0000				data segment 
+       3 0000  00			pattern db 0h 
+       4 0001  ??			table db ? 
+       5				 
+       6 0002				data ends 
+       7 0000				code segment 
+       8 0000  B8 ---- R		start:mov ax,data 
+       9 0003  8E D8			      mov ds,ax 
+      10 0005  B4 01			      mov ah,01    ;进行输入 
+      11 0007  CD 21			      int 21h 
+      12 0009  A2 0000 R		      mov pattern,al 
+      13 000C  B4 0A			      mov ah,0ah 
+      14 000E  CD 21				    int 21h 
+      15 0010  B2 0A				    mov dl,10 
+      16 0012  B4 02				    mov ah,02h 
+      17 0014  CD 21				    int 21h 
+      18 0016  B4 02			      mov ah,2    ;进行输出 
+      19 0018  8A 16 0000 R		      mov dl,pattern 
+      20 001C  CD 21			      int 21h 
+      21 001E  A0 0000 R		      mov al,pattern 
+      22 0021  B4 0A			      mov ah,10 
+      23 0023  F6 E4			      mul ah 
+      24 0025  A2 0000 R		      mov pattern,al 
+      25 0028  B4 4C			      mov ah,4Ch 
+      26 002A  CD 21			      int 21h 
+      27				 
+      28				 
+      29				 
+      30 002C				code ends 
+      31				end start 
+Microsoft (R) Macro Assembler Version 5.00                  3/11/19 22:48:08
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	002C	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0002	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+PATTERN  . . . . . . . . . . . .  	L BYTE	0000	DATA
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+TABLE  . . . . . . . . . . . . .  	L BYTE	0001	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  test		
+
+
+     31 Source  Lines
+     31 Total   Lines
+      7 Symbols
+
+  50658 + 465870 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

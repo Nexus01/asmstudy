@@ -1,0 +1,63 @@
+Microsoft (R) Macro Assembler Version 5.00                  1/15/19 21:19:37
+                                                             Page     1-1
+
+
+       1				assume cs:code,ds:data 
+       2 0000				data segment 
+       3 0000				data ends 
+       4 0000				code segment 
+       5 0000  33 C0			start:  xor ax,ax 
+       6 0002  B0 8A			        mov al,8ah 
+       7 0004  50			        push ax 
+       8 0005  24 F0			        and al,0f0h 
+       9 0007  B1 04			        mov cl,4 
+      10 0009  D2 C8			        ror al,cl 
+      11				        ;cmp al,0ah 
+      12 000B  04 30			        add al,30h 
+      13 000D  3C 39			        cmp al,'9' 
+      14 000F  76 02			        jbe noadd 
+      15 0011  04 07			        add al,7h 
+      16 0013  8A F8			noadd:  mov bh,al 
+      17 0015  58			        pop ax 
+      18 0016  24 0F			        and al,0fh 
+      19				        ;cmp al,0ah 
+      20 0018  04 30			        add al,30h 
+      21 001A  3C 39			        cmp al,'9' 
+      22 001C  76 02			        jbe next 
+      23 001E  04 07			        add al,7h 
+      24 0020  8A D8			next:   mov bl,al 
+      25 0022  B4 4C			        mov ah,4ch 
+      26 0024  CD 21			        int 21h 
+      27 0026				code ends 
+      28				end start 
+Microsoft (R) Macro Assembler Version 5.00                  1/15/19 21:19:37
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0026	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0000	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+NEXT . . . . . . . . . . . . . .  	L NEAR	0020	CODE
+NOADD  . . . . . . . . . . . . .  	L NEAR	0013	CODE
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  test		
+
+
+     28 Source  Lines
+     28 Total   Lines
+      7 Symbols
+
+  50662 + 465866 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

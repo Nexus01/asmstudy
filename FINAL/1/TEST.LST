@@ -1,0 +1,67 @@
+Microsoft (R) Macro Assembler Version 5.00                  1/15/19 20:30:07
+                                                             Page     1-1
+
+
+       1 0000				data segment 
+       2 0100				org 0100h 
+       3 0100  47 4F 4F 44 20 41 46	DEST DB 'GOOD AFTERNOON' 
+       4       54 45 52 4E 4F 4F 4E	
+       5 010E  000E			STRLEN DW $-DEST 
+       6 0110				data ends 
+       7 0000				code segment 
+       8				assume cs:code,ds:data;,es:extra 
+       9 0000  B8 ---- R		start:  mov ax,data 
+      10 0003  8E D8			        mov ds,ax 
+      11 0005  8E C0			        mov es,ax 
+      12 0007  FC			        cld 
+      13 0008  B0 52			        mov al,'R' 
+      14 000A  8D 3E 0100 R		        lea di,DEST 
+      15 000E  8B 0E 010E R		        mov cx,STRLEN 
+      16 0012  AE			again:  scasb 
+      17 0013  74 09			        jz next 
+      18 0015  49			        dec cx 
+      19 0016  75 FA			        jnz again 
+      20 0018  BB 0000			        mov bx,0 
+      21 001B  EB 04 90			        jmp done 
+      22 001E  4F			next:   dec di 
+      23 001F  8B DF			        mov bx,di 
+      24 0021  B4 4C			done:   mov ah,4ch 
+      25 0023  CD 21			        int 21h 
+      26 0025				code ends 
+      27				end start 
+Microsoft (R) Macro Assembler Version 5.00                  1/15/19 20:30:07
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0025	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0110	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+AGAIN  . . . . . . . . . . . . .  	L NEAR	0012	CODE
+
+DEST . . . . . . . . . . . . . .  	L BYTE	0100	DATA
+DONE . . . . . . . . . . . . . .  	L NEAR	0021	CODE
+
+NEXT . . . . . . . . . . . . . .  	L NEAR	001E	CODE
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+STRLEN . . . . . . . . . . . . .  	L WORD	010E	DATA
+
+@FILENAME  . . . . . . . . . . .  	TEXT  test		
+
+
+     26 Source  Lines
+     26 Total   Lines
+     10 Symbols
+
+  50618 + 465910 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors

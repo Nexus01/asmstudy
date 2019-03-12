@@ -1,0 +1,165 @@
+Open procedures:Microsoft (R) Macro Assembler Version 5.00                  12/19/18 23:03:31
+                                                             Page     1-1
+
+
+
+DL5S . . . . . . . . . . . . . .  	
+DL3S . . . . . . . . . . . . . .  	
+Microsoft (R) Macro Assembler Version 5.00                  12/19/18 23:03:31
+                                                             Page     1-1
+
+
+       1				         .MODEL TINY 
+       2 = F003				COM_ADD  EQU 0F003H 
+       3 = F000				PA_ADD   EQU 0F000H 
+       4 = F001				PB_ADD   EQU 0F001H 
+       5 = F002				PC_ADD   EQU 0F002H 
+       6 0064				         .STACK 100 
+       7 0000				         .DATA 
+       8 0000  6F			LED_Data DB  01101111B 
+       9 0001  EF			         DB  11101111B 
+      10 0002  AF			         DB  10101111B 
+      11 0003  D7			         DB  11010111B 
+      12 0004  DF			         DB  11011111B 
+      13 0005  DB			         DB  11011011B 
+      14 0000				         .CODE 
+      15 0000  B8 ---- R		START:   MOV  AX,@DATA 
+      16 0003  8E D8			         MOV  DS,AX 
+      17 0005  90			         NOP 
+      18 0006  BA F003			         MOV  DX,COM_ADD 
+      19 0009  B0 80			         MOV  AL,80H 
+      20 000B  EE			         OUT  DX,AL 
+      21 000C  BA F000			         MOV  DX,PA_ADD 
+      22 000F  B0 FF			         MOV  AL,0FFH 
+      23 0011  EE			         OUT  DX,AL 
+      24 0012  8D 1E 0000 R		         LEA  BX,LED_Data 
+      25 0016  B0 00			START1:  MOV  AL,0 
+      26 0018  D7			         XLAT 
+      27 0019  EE			         OUT  DX,AL 
+      28 001A  E8 007B R		         CALL DL5S 
+      29 001D  B9 0006			         MOV  CX,6 
+      30 0020  B0 01			START2:  MOV  AL,1 
+      31 0022  D7			         XLAT 
+      32 0023  EE			         OUT  DX,AL 
+      33 0024  E8 0068 R		         CALL DL500ms 
+      34 0027  B0 00			         MOV  AL,0 
+      35 0029  D7			         XLAT 
+      36 002A  EE			         OUT  DX,AL 
+      37 002B  E8 0068 R		         CALL DL500ms 
+      38 002E  B0 00			         MOV  AL,0 
+      39 0030  D7			         XLAT 
+      40 0031  EE			         OUT  DX,AL 
+      41 0032  E8 0068 R		         CALL DL500ms 
+      42 0035  E2 E9			         LOOP START2 
+      43 0037  B0 02			         MOV  AL,2 
+      44 0039  D7			         XLAT 
+      45 003A  EE			         OUT  DX,AL 
+      46 003B  E8 0070 R		         CALL DL3S 
+      47 003E  B0 03			         MOV  AL,3 
+      48 0040  D7			         XLAT 
+      49 0041  EE			         OUT  DX,AL 
+      50 0042  E8 007B R		         CALL DL5S 
+      51 0045  B9 0006			         MOV  CX,6 
+      52 0048  B0 04			START3:  MOV  AL,4 
+      53 004A  D7			         XLAT 
+      54 004B  EE			         OUT  DX,AL 
+Microsoft (R) Macro Assembler Version 5.00                  12/19/18 23:03:31
+                                                             Page     1-2
+
+
+      55 004C  E8 0068 R		         CALL DL500ms 
+      56 004F  B0 03			         MOV  AL,3 
+      57 0051  D7			         XLAT 
+      58 0052  EE			         OUT  DX,AL 
+      59 0053  E8 0068 R		         CALL DL500ms 
+      60 0056  B0 03			         MOV  AL,3 
+      61 0058  D7			         XLAT 
+      62 0059  EE			         OUT  DX,AL 
+      63 005A  E8 0068 R		         CALL DL500ms 
+      64 005D  E2 E9			         LOOP START3 
+      65 005F  B0 05			         MOV  AL,5 
+      66 0061  D7			         XLAT 
+      67 0062  EE			         OUT  DX,AL 
+      68 0063  E8 0070 R		         CALL DL3S 
+      69 0066  EB AE			         JMP  START1 
+      70 0068				DL500ms  PROC NEAR 
+      71 0068  51			         PUSH CX 
+      72 0069  B9 EA60			         MOV  CX,60000 
+      73 006C  E2 FE			DL500ms1:LOOP DL500ms1 
+      74 006E  59			         POP  CX 
+      75 006F  C3			         RET 
+      76 0070				DL500ms  ENDP 
+      77 0070				DL3S     PROC NEAR 
+      78 0070  51			         PUSH CX 
+      79 0071  B9 0006			         MOV  CX,6 
+      80 0074  E8 0068 R		DL3S1:   CALL DL500ms 
+      81 0077  E2 FB			         LOOP DL3S1 
+      82 0079  59			         POP  CX 
+      83 007A  C3			         RET 
+      84				         ENDP 
+test.asm(84): error A2105: Expected: instruction or directive
+      85 007B				DL5S     PROC NEAR 
+      86 007B  51			         PUSH CX 
+      87 007C  B9 000A			         MOV  CX,10 
+      88 007F  E8 0068 R		DL5S1:   CALL DL500ms 
+      89 0082  E2 FB			         LOOP DL5S1 
+      90 0084  59			         POP  CX 
+      91 0085  C3			         RET 
+      92				         ENDP 
+test.asm(92): error A2105: Expected: instruction or directive
+      93				          
+      94 0086				         END  START 
+Open procedures:
+DL5S . . . . . . . . . . . . . .  	
+DL3S . . . . . . . . . . . . . .  	
+Microsoft (R) Macro Assembler Version 5.00                  12/19/18 23:03:31
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	0006	WORD	PUBLIC	'DATA'
+  STACK  . . . . . . . . . . . .  	0064	PARA	STACK	'STACK'
+_TEXT  . . . . . . . . . . . . .  	0086	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+COM_ADD  . . . . . . . . . . . .  	NUMBER	F003	
+
+DL3S . . . . . . . . . . . . . .  	N PROC	0070	_TEXT	Length = 0000
+DL3S1  . . . . . . . . . . . . .  	L NEAR	0074	_TEXT
+DL500MS  . . . . . . . . . . . .  	N PROC	0068	_TEXT	Length = 0008
+DL500MS1 . . . . . . . . . . . .  	L NEAR	006C	_TEXT
+DL5S . . . . . . . . . . . . . .  	N PROC	007B	_TEXT	Length = 0000
+DL5S1  . . . . . . . . . . . . .  	L NEAR	007F	_TEXT
+
+LED_DATA . . . . . . . . . . . .  	L BYTE	0000	_DATA
+
+PA_ADD . . . . . . . . . . . . .  	NUMBER	F000	
+PB_ADD . . . . . . . . . . . . .  	NUMBER	F001	
+PC_ADD . . . . . . . . . . . . .  	NUMBER	F002	
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	_TEXT
+START1 . . . . . . . . . . . . .  	L NEAR	0016	_TEXT
+START2 . . . . . . . . . . . . .  	L NEAR	0020	_TEXT
+START3 . . . . . . . . . . . . .  	L NEAR	0048	_TEXT
+
+@CODE  . . . . . . . . . . . . .  	TEXT  _TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  0		
+@DATASIZE  . . . . . . . . . . .  	TEXT  0		
+@FILENAME  . . . . . . . . . . .  	TEXT  test		
+
+
+     94 Source  Lines
+     94 Total   Lines
+     29 Symbols
+
+  50610 + 465918 Bytes symbol space free
+
+      0 Warning Errors
+      4 Severe  Errors

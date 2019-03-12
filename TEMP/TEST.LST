@@ -1,0 +1,51 @@
+Microsoft (R) Macro Assembler Version 5.00                  12/18/18 11:02:51
+                                                             Page     1-1
+
+
+       1				assume cs:code,ds:data 
+       2 0000				data segment 
+       3 0000  0000 FFD9 0000		PP dw 0,-39,0 
+       4 0006				data ends 
+       5 0000				code segment 
+       6 0000  B8 ---- R		start:  mov ax,data 
+       7 0003  8E D8			        mov ds,ax 
+       8 0005  B8 0002			        mov ax,2 
+       9 0008  B9 0002			        mov cx,2 
+      10 000B  03 C0			LP1:    add ax,ax 
+      11 000D  E2 FC			        loop LP1 
+      12 000F  B4 4C			        mov ah,4ch 
+      13 0011  CD 21			        int 21h 
+      14 0013				code ends 
+      15				end start 
+Microsoft (R) Macro Assembler Version 5.00                  12/18/18 11:02:51
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+CODE . . . . . . . . . . . . . .  	0013	PARA	NONE	
+DATA . . . . . . . . . . . . . .  	0006	PARA	NONE	
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+LP1  . . . . . . . . . . . . . .  	L NEAR	000B	CODE
+
+PP . . . . . . . . . . . . . . .  	L WORD	0000	DATA
+
+START  . . . . . . . . . . . . .  	L NEAR	0000	CODE
+
+@FILENAME  . . . . . . . . . . .  	TEXT  test		
+
+
+     15 Source  Lines
+     15 Total   Lines
+      7 Symbols
+
+  50618 + 465910 Bytes symbol space free
+
+      0 Warning Errors
+      0 Severe  Errors
